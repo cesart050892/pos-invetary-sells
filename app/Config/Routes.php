@@ -20,7 +20,23 @@ $routes->setDefaultController('Home');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
-$routes->setAutoRoute(true);
+
+// // Would execute the show404 method of the App\Errors class
+$routes->set404Override('App\Controllers\Home::error404');
+
+// // Will display a custom view
+// $routes->set404Override(function()
+// {
+// 	$session = Services::session();
+// 	if($session->loggen_id){
+// 		return view('pages/src/errors/404');
+// 	}else{
+// 		$uri = site_url('login');
+// 		return redirect()->to('login'); 
+// 		// return view('pages/src/gen/login');
+// 	}
+// });
+$routes->setAutoRoute(false);
 
 /**
  * --------------------------------------------------------------------
@@ -30,7 +46,16 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Home::index',['filter' => 'auth']);
+$routes->get('login', 'Home::login',['as' => 'login']);
+$routes->get('register', 'Home::register');
+$routes->get('forgot', 'Home::forgot');
+$routes->get('recover', 'Home::recover');
+
+$routes->group('api', ['namespace' => 'App\Controllers\API', 'filter' => 'auth'], function ($routes) {
+	$routes->post('signup', 'User::signup');
+	$routes->get('test', 'User::test');
+});
 
 /**
  * --------------------------------------------------------------------

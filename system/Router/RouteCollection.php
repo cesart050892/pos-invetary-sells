@@ -389,7 +389,8 @@ class RouteCollection implements RouteCollectionInterface
 	 */
 	public function get404Override()
 	{
-		return $this->override404;
+		$override = $this->override404;
+		return $override;
 	}
 
 	//--------------------------------------------------------------------
